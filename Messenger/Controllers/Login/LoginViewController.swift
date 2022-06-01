@@ -71,11 +71,14 @@ class LoginViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register", style: .done, target: self, action: #selector(didTapRegister) )
         
+        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        
         // add subviews
         view.addSubview(scrollView)
         scrollView.addSubview(imageView)
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
+        scrollView.addSubview(loginButton)
     }
     
     override func viewDidLayoutSubviews() {
@@ -86,6 +89,24 @@ class LoginViewController: UIViewController {
         imageView.frame = CGRect(x: (scrollView.width-size)/2, y: 20, width: size, height: size)
         emailField.frame = CGRect(x: 30, y: imageView.bottom + 10, width: scrollView.width-60, height: 52)
         passwordField.frame = CGRect(x: 30, y: emailField.bottom + 10, width: scrollView.width-60, height: 52)
+        loginButton.frame = CGRect(x: 30, y: passwordField.bottom + 10, width: scrollView.width-60, height: 52)
+    }
+    
+    @objc func loginButtonTapped() {
+        guard let email = emailField.text, let password = passwordField.text,
+              !email.isEmpty, !password.isEmpty, password.count >= 6 else {
+            alertUserLoginError()
+            return
+        }
+        
+        // firebase login
+    }
+    
+    func alertUserLoginError() {
+        let alert = UIAlertController(title: "Woops", message: "Please enter all information to log in.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        
+        present(alert, animated: true)
     }
     
     @objc private func didTapRegister() {
