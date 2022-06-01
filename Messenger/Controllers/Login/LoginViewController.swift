@@ -72,6 +72,8 @@ class LoginViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register", style: .done, target: self, action: #selector(didTapRegister) )
         
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        emailField.delegate = self
+        passwordField.delegate = self
         
         // add subviews
         view.addSubview(scrollView)
@@ -117,4 +119,21 @@ class LoginViewController: UIViewController {
     
 
 
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    
+    // when user hit the Enter in the text field
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailField {
+            passwordField.becomeFirstResponder()
+        }
+        // if it's password, call loginButtonTapped
+        else if textField == passwordField {
+            loginButtonTapped()
+        }
+        
+        return true
+    }
+    
 }
