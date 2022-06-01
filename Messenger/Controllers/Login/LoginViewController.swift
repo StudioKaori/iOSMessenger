@@ -41,7 +41,7 @@ class LoginViewController: UIViewController {
        let field = UITextField()
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.returnKeyType = .continue
+        field.returnKeyType = .done
         field.layer.cornerRadius = 12
         field.layer.borderWidth = 1
         field.placeholder = "Password..."
@@ -51,6 +51,17 @@ class LoginViewController: UIViewController {
         field.backgroundColor = .white
         field.isSecureTextEntry = true
         return field
+    }()
+    
+    private let loginButton: UIButton = {
+      let button = UIButton()
+        button.setTitle("Log In", for: .normal)
+        button.backgroundColor = .link
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 12
+        button.layer.masksToBounds = true
+        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        return button
     }()
     
     override func viewDidLoad() {
