@@ -17,7 +17,8 @@ class RegisterViewController: UIViewController {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Logo")
+        imageView.image = UIImage(systemName: "person")
+        imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -113,6 +114,19 @@ class RegisterViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(registerButton)
+        
+        // Add tap gesture
+        imageView.isUserInteractionEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapChangeProfilePic))
+        imageView.addGestureRecognizer(gesture)
+        
+    }
+    
+    
+    @objc func didTapChangeProfilePic() {
+        print("didTapChangeProfilePic called")
     }
     
     override func viewDidLayoutSubviews() {
@@ -130,11 +144,20 @@ class RegisterViewController: UIViewController {
     
     @objc func registerButtonTapped() {
         
+        firstNameField.resignFirstResponder()
+        lastNameField.resignFirstResponder()
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
         
-        guard let email = emailField.text, let password = passwordField.text,
-              !email.isEmpty, !password.isEmpty, password.count >= 6 else {
+        guard let firstName = firstNameField.text,
+              let lastName = lastNameField.text,
+              let email = emailField.text,
+              let password = passwordField.text,
+              !firstName.isEmpty,
+              !lastName.isEmpty,
+              !email.isEmpty,
+              !password.isEmpty,
+              password.count >= 6 else {
             alertUserLoginError()
             return
         }
@@ -143,7 +166,7 @@ class RegisterViewController: UIViewController {
     }
     
     func alertUserLoginError() {
-        let alert = UIAlertController(title: "Woops", message: "Please enter all information to log in.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Woops", message: "Please enter all information to create a new account.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         
         present(alert, animated: true)
