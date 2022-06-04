@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ConversationsViewController: UIViewController {
 
@@ -16,9 +17,12 @@ class ConversationsViewController: UIViewController {
 
     // check if the user is logged in or not
     override func viewDidAppear(_ animated: Bool) {
-        let isLoggedIn = UserDefaults.standard.bool(forKey: "logged_in")
-        
-        if !isLoggedIn {
+        super.viewDidAppear(animated)
+        validateAuth()
+    }
+    
+    private func validateAuth() {
+        if FirebaseAuth.Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             let nav = UINavigationController(rootViewController: vc)
             // Show the nav fullscreen instead of model to avoid being dismissed by the user
