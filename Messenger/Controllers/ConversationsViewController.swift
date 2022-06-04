@@ -13,8 +13,7 @@ class ConversationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        
-        DatabaseManager.shared.test()
+
     }
 
     // check if the user is logged in or not
