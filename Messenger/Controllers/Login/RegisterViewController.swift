@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class RegisterViewController: UIViewController {
     
@@ -149,6 +150,7 @@ class RegisterViewController: UIViewController {
         registerButton.frame = CGRect(x: 30, y: passwordField.bottom + 10, width: scrollView.width-60, height: 52)
     }
     
+    // MARK: - Firebase login
     @objc func registerButtonTapped() {
         
         firstNameField.resignFirstResponder()
@@ -170,6 +172,8 @@ class RegisterViewController: UIViewController {
         }
         
         // firebase login
+        //FirebaseAuth.Auth.auth().createUser(withEmail: <#T##String#>, password: <#T##String#>)
+        
     }
     
     func alertUserLoginError() {
