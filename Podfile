@@ -12,5 +12,17 @@ pod 'Firebase/Database'
 
 # Facebook
 pod 'FBSDKLoginKit'
+
+# Messenger UI
+pod 'MessageKit'
+
+# Spinner
+pod 'JGProgressHUD'
+
+# Database for cache
+pod 'RealmSwift'
+
+
+pod 'SDWebImage'
     
 end
