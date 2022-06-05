@@ -91,3 +91,6 @@ iOSInjectionProject/
 
 #Google API key
 Messenger/GoogleService-Info.plist
+
+# Contains FB account
+Messenger/Info.plist
