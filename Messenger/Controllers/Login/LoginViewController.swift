@@ -199,24 +199,44 @@ extension LoginViewController: LoginButtonDelegate {
             return
         }
         
-        let credential = FacebookAuthProvider.credential(withAccessToken: token)
-        
-        FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
-            guard let strongSelf = self else {
-                return
-            }
-            
-            guard authResult != nil, error == nil else {
+        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
+                                                         parameters: ["fields": "email, name"],
+                                                         tokenString: token,
+                                                         version: nil,
+                                                         httpMethod: .get)
+        facebookRequest.start(completion: { _, result, error in
+            guard let result = result as? [String: Any], error == nil else {
                 if let error = error {
-                    print("Facebook credential login failed, MFA(multi factor auth) may be needed. Error: \(error)")
+                    print("Failed to make facebook graph request. Error : \(error)")
                 }
                 return
             }
             
-            print("Successfully log FB user in.")
-            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
-    
+            print("FB request result: \(result)")
+            
+            // Pass the credential to Firebase
+            let credential = FacebookAuthProvider.credential(withAccessToken: token)
+            
+            FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
+                guard let strongSelf = self else {
+                    return
+                }
+                
+                guard authResult != nil, error == nil else {
+                    if let error = error {
+                        print("Facebook credential login failed, MFA(multi factor auth) may be needed. Error: \(error)")
+                    }
+                    return
+                }
+                
+                print("Successfully log FB user in.")
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+        
+            })
+            
         })
+        
+        
     }
     
     
