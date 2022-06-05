@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FBSDKLoginKit
 
 class LoginViewController: UIViewController {
     
@@ -65,6 +66,9 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    // FB login
+    private let fbLoginButton = FBLoginButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Log in"
@@ -82,6 +86,7 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
+        scrollView.addSubview(fbLoginButton)
     }
     
     override func viewDidLayoutSubviews() {
@@ -89,10 +94,27 @@ class LoginViewController: UIViewController {
         scrollView.frame = view.bounds
         let size = scrollView.width/3
         // image size will be squire. to center the image, divide by 2
-        imageView.frame = CGRect(x: (scrollView.width-size)/2, y: 20, width: size, height: size)
-        emailField.frame = CGRect(x: 30, y: imageView.bottom + 10, width: scrollView.width-60, height: 52)
-        passwordField.frame = CGRect(x: 30, y: emailField.bottom + 10, width: scrollView.width-60, height: 52)
-        loginButton.frame = CGRect(x: 30, y: passwordField.bottom + 10, width: scrollView.width-60, height: 52)
+        imageView.frame = CGRect(x: (scrollView.width-size)/2,
+                                 y: 20,
+                                 width: size,
+                                 height: size)
+        emailField.frame = CGRect(x: 30,
+                                  y: imageView.bottom + 10,
+                                  width: scrollView.width-60,
+                                  height: 52)
+        passwordField.frame = CGRect(x: 30,
+                                     y: emailField.bottom + 10,
+                                     width: scrollView.width-60,
+                                     height: 52)
+        loginButton.frame = CGRect(x: 30,
+                                   y: passwordField.bottom + 10,
+                                   width: scrollView.width-60,
+                                   height: 52)
+        fbLoginButton.frame = CGRect(x: 30,
+                                     y: loginButton.bottom + 10,
+                                     width: scrollView.width-60,
+                                     height: 52)
+
     }
     
     // MARK: - login button tapped
