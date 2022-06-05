@@ -6,8 +6,16 @@
 //
 
 import UIKit
+import MessageKit
 
-class ChatViewController: UIViewController {
+struct Message: MessageType {
+    var sender: SenderType
+    var messageId: String
+    var sentDate: Date
+    var kind: MessageKind
+}
+
+class ChatViewController: MessagesViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
