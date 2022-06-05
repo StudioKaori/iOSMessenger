@@ -11,6 +11,8 @@ import JGProgressHUD
 
 class ConversationsViewController: UIViewController {
     
+    private let spinner = JGProgressHUD(style: .dark)
+    
     private let tableView: UITableView = {
         let table = UITableView()
         // hide the conversation since it's initially empty
@@ -76,6 +78,16 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = "Hello World"
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Un-highlight the selected cell
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let vc = ChatViewController()
+        vc.title = "Jenny Smith"
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
