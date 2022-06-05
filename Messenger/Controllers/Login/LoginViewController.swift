@@ -212,7 +212,28 @@ extension LoginViewController: LoginButtonDelegate {
                 return
             }
             
-            print("FB request result: \(result)")
+            guard let userName = result["name"] as? String,
+                  let email = result["email"] as? String else {
+                print("Failed to get email and name from fb result.")
+                return
+            }
+            
+            // Separate first and last name
+            let nameComponents = userName.components(separatedBy: " ")
+            guard nameComponents.count == 2 else {
+                return
+            }
+            let firstName = nameComponents[0]
+            let lastName = nameComponents[1]
+            
+            // Check if the user already exists on Firebase
+            DatabaseManager.shared.userExists(with: email, completion: { exists in
+                if !exists {
+                    DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName,
+                                                                        lastName: lastName,
+                                                                        emailAddress: email))
+                }
+            })
             
             // Pass the credential to Firebase
             let credential = FacebookAuthProvider.credential(withAccessToken: token)
