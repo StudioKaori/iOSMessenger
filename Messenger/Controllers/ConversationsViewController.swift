@@ -40,6 +40,12 @@ class ConversationsViewController: UIViewController {
         setupTableView()
         fetchConversations()
     }
+    
+    // For showing tableview by adding sub view
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = view.bounds
+    }
 
     // check if the user is logged in or not
     override func viewDidAppear(_ animated: Bool) {
@@ -58,7 +64,7 @@ class ConversationsViewController: UIViewController {
     }
     
     private func fetchConversations() {
-        
+        tableView.isHidden = false
     }
     
     private func setupTableView() {
