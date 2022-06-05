@@ -67,7 +67,11 @@ class LoginViewController: UIViewController {
     }()
     
     // FB login
-    private let fbLoginButton = FBLoginButton()
+    private let fbLoginButton: FBLoginButton = {
+        let button = FBLoginButton()
+        button.permissions = ["email", "public_profile"]
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,6 +83,8 @@ class LoginViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         emailField.delegate = self
         passwordField.delegate = self
+        
+        fbLoginButton.delegate = self
         
         // add subviews
         view.addSubview(scrollView)
@@ -178,5 +184,40 @@ extension LoginViewController: UITextFieldDelegate {
         
         return true
     }
+    
+}
+
+extension LoginViewController: LoginButtonDelegate {
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+        // no operation
+    }
+    
+    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+        // Get token and pass credential to Firebase
+        guard let token = result?.token?.tokenString else {
+            print("User failed to log in with Facebook")
+            return
+        }
+        
+        let credential = FacebookAuthProvider.credential(withAccessToken: token)
+        
+        FirebaseAuth.Auth.auth().signIn(with: credential, completion: { [weak self] authResult, error in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            guard authResult != nil, error == nil else {
+                if let error = error {
+                    print("Facebook credential login failed, MFA(multi factor auth) may be needed. Error: \(error)")
+                }
+                return
+            }
+            
+            print("Successfully log FB user in.")
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+    
+        })
+    }
+    
     
 }
