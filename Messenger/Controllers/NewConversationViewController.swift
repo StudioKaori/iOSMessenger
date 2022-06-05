@@ -45,6 +45,9 @@ class NewConversationViewController: UIViewController {
                                                             style: .done,
                                                             target: self,
                                                             action: #selector(dismissSelf))
+        
+        // give a focus to the search bar from the biggining
+        searchBar.becomeFirstResponder()
     }
     
     @objc private func dismissSelf() {
