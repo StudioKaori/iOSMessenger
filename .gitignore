@@ -94,3 +94,5 @@ Messenger/GoogleService-Info.plist
 
 # Contains FB account
 Messenger/Info.plist
+
+Messenger.xcodeproj/xcuserdata/
