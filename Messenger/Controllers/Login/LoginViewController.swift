@@ -280,7 +280,7 @@ extension LoginViewController: LoginButtonDelegate {
                                     }
 
                                 }) //:uploadProfilePicture
-                            })
+                            }).resume() // To begin URLSession.shared.dataTask, resume() needed!
                         }
                     })
                 }
