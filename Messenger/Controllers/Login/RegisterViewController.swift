@@ -182,7 +182,7 @@ class RegisterViewController: UIViewController {
                 return
             }
             
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 strongSelf.spinner.dismiss()
             }
             
@@ -212,7 +212,21 @@ class RegisterViewController: UIViewController {
                             return
                         }
                         
-                        
+                        let fileName = chatUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data,
+                                                                   fileName: fileName,
+                                                                   completion: { result in
+                            switch result {
+                            case .success(let downloadUrl):
+                                // save user profile image to the local user settings (UserDefaults)
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                print(downloadUrl)
+                            case .failure(let error):
+                                print("Storage manager error: \(error)")
+                                
+                            }
+                            
+                        })
                     }
                 })
                 
