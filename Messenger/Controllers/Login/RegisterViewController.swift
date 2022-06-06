@@ -199,10 +199,22 @@ class RegisterViewController: UIViewController {
                     return
                 }
                 
-                DatabaseManager.shared.insertUser(with: ChatAppUser(
-                    firstName: firstName,
-                    lastName: lastName,
-                    emailAddress: email))
+                let chatUser = ChatAppUser(firstName: firstName,
+                                           lastName: lastName,
+                                           emailAddress: email)
+                DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+                    if success {
+                        // upload image
+                        
+                        // Get a local uploaded profile image
+                        guard let image = strongSelf.imageView.image,
+                              let data = image.pngData() else {
+                            return
+                        }
+                        
+                        
+                    }
+                })
                 
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
                 

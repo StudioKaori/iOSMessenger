@@ -68,4 +68,9 @@ struct ChatAppUser {
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         return safeEmail
     }
+    
+    var profilePictureFileName: String {
+        // images/kaori-gmail-com_profile_picture.png
+        return "\(safeEmail)_profile_picture.png"
+    }
 }
