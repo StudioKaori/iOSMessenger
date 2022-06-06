@@ -199,6 +199,7 @@ extension LoginViewController: UITextFieldDelegate {
     
 }
 
+// MARK: - Facebook login
 extension LoginViewController: LoginButtonDelegate {
     func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
         // no operation
@@ -212,7 +213,8 @@ extension LoginViewController: LoginButtonDelegate {
         }
         
         let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
-                                                         parameters: ["fields": "email, name"],
+                                                         parameters: ["fields":
+                                                                        "email, first_name, last_name, picture.type(large)"],
                                                          tokenString: token,
                                                          version: nil,
                                                          httpMethod: .get)
@@ -224,22 +226,22 @@ extension LoginViewController: LoginButtonDelegate {
                 return
             }
             
-            guard let userName = result["name"] as? String,
+            print(result)
+            
+            return
+            
+            guard let firstName = result["first_name"] as? String,
+                  let lastName = result["last_name"] as? String,
                   let email = result["email"] as? String else {
                 print("Failed to get email and name from fb result.")
                 return
             }
             
-            // Separate first and last name
-            let nameComponents = userName.components(separatedBy: " ")
-            guard nameComponents.count == 2 else {
-                return
-            }
-            let firstName = nameComponents[0]
-            let lastName = nameComponents[1]
             
             // Check if the user already exists on Firebase
             DatabaseManager.shared.userExists(with: email, completion: { exists in
+                
+                // If not exist on Firebase, register facebook user to firebase
                 if !exists {
                     let chatUser = ChatAppUser(firstName: firstName,
                                                lastName: lastName,
@@ -247,6 +249,21 @@ extension LoginViewController: LoginButtonDelegate {
                     DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
                         if success {
                             // upload image
+//                            let fileName = chatUser.profilePictureFileName
+//                            StorageManager.shared.uploadProfilePicture(with: data,
+//                                                                       fileName: fileName,
+//                                                                       completion: { result in
+//                                switch result {
+//                                case .success(let downloadUrl):
+//                                    // save user profile image to the local user settings (UserDefaults)
+//                                    UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+//                                    print(downloadUrl)
+//                                case .failure(let error):
+//                                    print("Storage manager error: \(error)")
+//
+//                                }
+//
+//                            })
                         }
                     })
                 }
