@@ -95,7 +95,8 @@ class ConversationsViewController: UIViewController {
         }
         
         // show chat view controller
-        let vc = ChatViewController()
+        let vc = ChatViewController(with: email)
+        vc.isNewConversation = true
         vc.title = name
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
@@ -121,7 +122,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         // Un-highlight the selected cell
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let vc = ChatViewController()
+        let vc = ChatViewController(with: "abc@gmail.com")
         vc.title = "Jenny Smith"
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)

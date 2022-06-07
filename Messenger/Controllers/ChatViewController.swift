@@ -7,6 +7,7 @@
 
 import UIKit
 import MessageKit
+import InputBarAccessoryView
 
 struct Message: MessageType {
     var sender: SenderType
@@ -60,10 +61,32 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        messageInputBar.delegate = self
     }
 
 }
 
+// MARK: - InputBarAccessoryViewDelegate
+extension ChatViewController: InputBarAccessoryViewDelegate {
+    
+    // When the send button is hit
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        
+        // if the text is only space( ), don't send
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else {
+            return
+        }
+        
+        // Send msg
+        if isNewConversation {
+            // create convo in database
+        } else {
+            // append to existing conversation data
+        }
+    }
+}
+
+// MARK: - MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate
 extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate {
     
     func currentSender() -> SenderType {
