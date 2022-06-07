@@ -78,11 +78,35 @@ extension NewConversationViewController: UISearchBarDelegate {
         // check if array has firebase results
         if hasFetched {
             // if it does: filter
+            filterUsers(with: query)
             
         } else {
             // if not, fetch then filter
+            DatabaseManager.shared.getAllUsers(completion: { [weak self] result in
+                switch result {
+                case .success(let usersCollection):
+                    self?.users = usersCollection
+                    self?.filterUsers(with: query)
+                case .failure(let error):
+                    print("Failed to get users: \(error)")
+                }
+            })
         }
-        
+    }
+    
+    func filterUsers(with term: String) {
         // Update the UI: either show results or show no result
+        guard hasFetched else {
+            return
+        }
+        var results: [[String: String]] = self.users.filter({
+            guard let name = $0["mame"]?.lowercased() as? String else {
+                return false
+            }
+            
+            return name.hasPrefix(term.lowercased())
+        })
+        
+        
     }
 }
