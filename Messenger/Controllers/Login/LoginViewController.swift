@@ -156,10 +156,16 @@ class LoginViewController: UIViewController {
             
             guard let result = authResult, error == nil else {
                 print("Error: log in")
+                if let error = error {
+                    print("Error: \(error)")
+                }
                 return
             }
             
             let user = result.user
+            
+            UserDefaults.standard.set(email, forKey: "email")
+            
             print("Loggin user: \(user)")
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         })
@@ -237,6 +243,8 @@ extension LoginViewController: LoginButtonDelegate {
                 return
             }
             
+            // Save email to UserDefault
+            UserDefaults.standard.set(email, forKey: "email")
             
             // Check if the user already exists on Firebase
             DatabaseManager.shared.userExists(with: email, completion: { exists in
