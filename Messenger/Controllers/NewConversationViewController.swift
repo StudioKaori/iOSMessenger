@@ -12,7 +12,7 @@ class NewConversationViewController: UIViewController {
     
     // MARK: - Properties
     
-    // Set a selected user info to the parameter
+    // Get a selected user info to the parameter when a target user is selected
     public var completion: (([String: String]) -> (Void))?
     
     private let spinner = JGProgressHUD(style: .dark)

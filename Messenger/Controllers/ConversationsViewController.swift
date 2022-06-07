@@ -89,9 +89,14 @@ class ConversationsViewController: UIViewController {
     }
     
     private func createNewConversation(results: [String: String]) {
+        guard let name = results["name"],
+              let email = results["email"] else {
+            return
+        }
+        
         // show chat view controller
         let vc = ChatViewController()
-        vc.title = "Jenny Smith"
+        vc.title = name
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
