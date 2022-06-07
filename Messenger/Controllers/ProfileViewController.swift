@@ -41,7 +41,7 @@ class ProfileViewController: UIViewController {
                                         y: 0,
                                         width: self.view.width,
                                         height: 300))
-        headerView.backgroundColor = .link
+        headerView.backgroundColor = .white
         
         let imageView = UIImageView(frame: CGRect(x: (headerView.width - 150) / 2,
                                                   y: 75,
