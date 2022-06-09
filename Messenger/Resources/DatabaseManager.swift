@@ -205,8 +205,10 @@ extension DatabaseManager {
                 break
             }
             
+            let conversationId = "conversation_\(firstMessage.messageId)"
+            
             let newConversationData: [String: Any] = [
-                "id": "conversation_\(firstMessage.messageId)",
+                "id": conversationId,
                 "other_user_email": otherUserEmail,
                 "latest_message": [
                     "date": dateString,
@@ -221,12 +223,16 @@ extension DatabaseManager {
                 conversations.append(newConversationData)
                 userNode["conversations"] = conversations
                 
-                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                ref.setValue(userNode, withCompletionBlock: { [weak self] error, _ in
                     guard error == nil else {
                         completion(false)
                         return
                     }
-                    completion(true)
+                    
+                    // This will replace completion true by completion: completion
+                    self?.finishCreatingConversation(conversationID: conversationId,
+                                                    message: firstMessage,
+                                                    completion: completion)
                 })
                 
             } else {
@@ -235,15 +241,59 @@ extension DatabaseManager {
                     newConversationData
                 ]
                 
-                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                ref.setValue(userNode, withCompletionBlock: { [weak self] error, _ in
                     guard error == nil else {
                         completion(false)
                         return
                     }
-                    completion(true)
+                    
+                    // This will replace completion true by completion: completion
+                    self?.finishCreatingConversation(conversationID: conversationId,
+                                                    message: firstMessage,
+                                                    completion: completion)
                 })
             }
             
+        })
+    }
+    
+    private func finishCreatingConversation(conversationID: String, message: Message, completion: @escaping (Bool) -> Void) {
+        
+//        "gjiaoerugj (conversation_id)" {
+//           "messages": [
+//               {
+//                   "id": String,
+//                    "type": text, photo, video,
+//                    "content": String, (text msg, image url etc)
+//                    "date": Date(),
+//                    "sender_email": String,
+//                   "isRead": Bool
+//               }
+//           ]
+//        }
+        
+        let message: [String: Any] = [
+            "id": message.messageId,
+            "type": message.kind.rawValue,
+            "content": "",
+            "date": "",
+            "sender_email": "",
+            "isRead": false
+        ]
+        
+        let value : [String: Any] = [
+            "message": [
+                message
+            ]
+        ]
+        
+        database.child("\(conversationID)").setValue(value, withCompletionBlock: { error, _ in
+            guard error == nil else {
+                completion(false)
+                return
+            }
+            
+            completion(true)
         })
     }
     
