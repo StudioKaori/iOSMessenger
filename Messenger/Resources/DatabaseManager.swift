@@ -231,7 +231,7 @@ extension DatabaseManager {
                     
                     // This will replace completion true by completion: completion
                     self?.finishCreatingConversation(conversationID: conversationId,
-                                                    message: firstMessage,
+                                                    firstMessage: firstMessage,
                                                     completion: completion)
                 })
                 
@@ -249,7 +249,7 @@ extension DatabaseManager {
                     
                     // This will replace completion true by completion: completion
                     self?.finishCreatingConversation(conversationID: conversationId,
-                                                    message: firstMessage,
+                                                    firstMessage: firstMessage,
                                                     completion: completion)
                 })
             }
@@ -257,7 +257,7 @@ extension DatabaseManager {
         })
     }
     
-    private func finishCreatingConversation(conversationID: String, message: Message, completion: @escaping (Bool) -> Void) {
+    private func finishCreatingConversation(conversationID: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
         
 //        "gjiaoerugj (conversation_id)" {
 //           "messages": [
@@ -272,18 +272,54 @@ extension DatabaseManager {
 //           ]
 //        }
         
-        let message: [String: Any] = [
-            "id": message.messageId,
-            "type": message.kind.rawValue,
-            "content": "",
-            "date": "",
-            "sender_email": "",
+        let messageDate = firstMessage.sentDate
+        let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+        
+        var message = ""
+        
+        switch firstMessage.kind {
+            
+        case .text(let messageText):
+            message = messageText
+        case .attributedText(_):
+            break
+        case .photo(_):
+            break
+        case .video(_):
+            break
+        case .location(_):
+            break
+        case .emoji(_):
+            break
+        case .audio(_):
+            break
+        case .contact(_):
+            break
+        case .linkPreview(_):
+            break
+        case .custom(_):
+            break
+        }
+        
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+            completion(false)
+            return
+        }
+        
+        let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+        
+        let collectionMessage: [String: Any] = [
+            "id": firstMessage.messageId,
+            "type": firstMessage.kind.messageKindString,
+            "content": message,
+            "date": dateString,
+            "sender_email": currentUserEmail,
             "isRead": false
         ]
         
         let value : [String: Any] = [
             "message": [
-                message
+                collectionMessage
             ]
         ]
         
