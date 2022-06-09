@@ -163,12 +163,14 @@ extension DatabaseManager {
             return
         }
         let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
+        
         let ref = database.child(safeEmail)
+        
         ref.observeSingleEvent(of: .value,
                                with: { snapshot in
             
             // Check if the current user exist on the database
-            guard let userNode = snapshot.value as? [String: Any] else {
+            guard var userNode = snapshot.value as? [String: Any] else {
                 completion(false)
                 print("User not found: \(safeEmail)")
                 return
@@ -203,26 +205,43 @@ extension DatabaseManager {
                 break
             }
             
-            let newConversationData: [[String: Any]] = [
-               [
-                   "id": "",
-                   "other_user_email": otherUserEmail,
-                   "latest_message": [
-                       "date": dateString,
-                       "message": message,
-                       "is_read": false
-                   ]
-               ],
+            let newConversationData: [String: Any] = [
+                "id": "conversation_\(firstMessage.messageId)",
+                "other_user_email": otherUserEmail,
+                "latest_message": [
+                    "date": dateString,
+                    "message": message,
+                    "is_read": false
+                ]
             ] //: newConversationData
             
             if var conversations = userNode["conversations"] as? [[String: Any]] {
                 // conversation array exists for current user
                 // you should append
-                conversations
+                conversations.append(newConversationData)
+                userNode["conversations"] = conversations
+                
+                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    completion(true)
+                })
+                
             } else {
-                // not exist, create a new conversation on database
+                // conversation array does not exist, create a new conversation on database
+                userNode["conversations"] = [
+                    newConversationData
+                ]
                 
-                
+                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    completion(true)
+                })
             }
             
         })
