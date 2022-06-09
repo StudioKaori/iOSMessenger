@@ -26,7 +26,7 @@ class ChatViewController: MessagesViewController {
     
     // MARK: - Properties
     
-    public static var dateFormatter: DateFormatter = {
+    public static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .long
@@ -41,10 +41,10 @@ class ChatViewController: MessagesViewController {
     
     // Make sender to optional in case the email is empty, and not gonna return the sender
     private var selfSender: Sender? {
-        guard let email = UserDefaults.standard.value(forKey: "email") else {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return nil
         }
-        Sender(photoURL: "",
+        return Sender(photoURL: "",
                senderId: email,
                displayName: "Joe Smith")
         
@@ -103,8 +103,12 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                                   sentDate: Date(),
                                   kind: .text(text))
             DatabaseManager.shared.createNewConversation(with: otherUserEmail,
-                                                         firstMessage: <#T##Message#>,
-                                                         completion: <#T##(Bool) -> Void#>)
+                                                         firstMessage: message,
+                                                         completion: { success in
+                if success {
+                    print("message sent \(message)")
+                }
+            })
         } else {
             // append to existing conversation data
         }
@@ -112,12 +116,14 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     
     private func createMessageId() -> String? {
         // date, otherUserEmail, senderEmail, randomInt
+        
         guard let currentUserEmail = UserDefaults.standard.value(forKey: "email") else {
             return nil
         }
-        let newIdentifier = "\(otherUserEmail)_\(currentUserEmail)"
-        
-        
+        let dateString = Self.dateFormatter.string(from: Date())
+        let newIdentifier = "\(otherUserEmail)_\(currentUserEmail)_\(dateString)"
+        print("Created message id: \(newIdentifier)")
+        return newIdentifier
     }
 }
 
