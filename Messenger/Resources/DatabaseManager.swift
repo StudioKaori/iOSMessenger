@@ -166,11 +166,38 @@ extension DatabaseManager {
         let ref = database.child(safeEmail)
         ref.observeSingleEvent(of: .value,
                                with: { snapshot in
+            
+            // Check if the current user exist on the database
             guard let userNode = snapshot.value as? [String: Any] else {
                 completion(false)
                 print("User not found: \(safeEmail)")
                 return
             }
+            
+            let messageDate = 
+            
+            let newConversationData: [[String: Any]] = [
+               [
+                   "id": "",
+                   "other_user_email": otherUserEmail,
+                   "latest_message": [
+                       "date": Date(),
+                       "message":"",
+                       "is_read": false
+                   ]
+               ],
+            ] //: newConversationData
+            
+            if var conversations = userNode["conversations"] as? [[String: Any]] {
+                // conversation array exists for current user
+                // you should append
+                conversations
+            } else {
+                // not exist, create a new conversation on database
+                
+                
+            }
+            
         })
     }
     
