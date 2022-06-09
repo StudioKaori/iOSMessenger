@@ -23,6 +23,7 @@ final class DatabaseManager {
     
 }
 
+
 // MARK: - Account management
 extension DatabaseManager {
     
@@ -123,11 +124,54 @@ extension DatabaseManager {
 }
 
 // MARK: - Sending msgs / conversations
+
+/*
+ Database schema
+ 
+ "gjiaoerugj (conversation_id)" {
+    "messages": [
+        {
+            "id": String,
+             "type": text, photo, video,
+             "content": String, (text msg, image url etc)
+             "date": Date(),
+             "sender_email": String,
+            "isRead": Bool
+        }
+    ]
+ }
+ 
+ conversation => [
+    [
+        "conversation_id": "gjiaoerugj"
+        "other_user_email":
+        "latest_message": => {
+            "date": Date()
+            "latest_message":
+            "is_read": true/false
+        }
+    ]
+ ]
+ 
+*/
+
 extension DatabaseManager {
     
     /// Creates a new conversation with target user email and first message sent
     public func createNewConversation(with otherUserEmail: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
-        
+        guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
+        let ref = database.child(safeEmail)
+        ref.observeSingleEvent(of: .value,
+                               with: { snapshot in
+            guard let userNode = snapshot.value as? [String: Any] else {
+                completion(false)
+                print("User not found: \(safeEmail)")
+                return
+            }
+        })
     }
     
     /// Fetches and returns all conversations for the user with passed in email
