@@ -177,13 +177,39 @@ extension DatabaseManager {
             let messageDate = firstMessage.sentDate
             let dateString = ChatViewController.dateFormatter.string(from: messageDate)
             
+            var message = ""
+            
+            switch firstMessage.kind {
+                
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            case .photo(_):
+                break
+            case .video(_):
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .linkPreview(_):
+                break
+            case .custom(_):
+                break
+            }
+            
             let newConversationData: [[String: Any]] = [
                [
                    "id": "",
                    "other_user_email": otherUserEmail,
                    "latest_message": [
                        "date": dateString,
-                       "message":"",
+                       "message": message,
                        "is_read": false
                    ]
                ],
