@@ -60,6 +60,34 @@ class ConversationsViewController: UIViewController {
         view.addSubview(noConversationsLabel)
         setupTableView()
         fetchConversations()
+        startListeningForConversations()
+    }
+    
+
+    // Add listener each time conversation updated in the real time DB
+    private func startListeningForConversations() {
+        // get email first
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        
+        // get all conversation in DB
+        DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
+            switch result {
+            case .success(let conversations):
+                // if the conversations is empty, don't update table view
+                guard !conversations.isEmpty else {
+                    return
+                }
+                
+                self?.conversations = conversations
+            case .failure(let error):
+                print("failed to get conversations :\(error)")
+            }
+            
+        })
     }
     
     // For showing tableview by adding sub view
