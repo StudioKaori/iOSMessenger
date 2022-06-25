@@ -341,12 +341,14 @@ extension DatabaseManager {
     
     /// Fetches and returns all conversations for the user with passed in email
     public func getAllConversations(for email: String, completion: @escaping (Result<[Conversation], Error>) -> Void) {
-        
+        // everytime new conversation is created, the completion will be called.
+        database.child("\(email)/conversations").observe(.value, with: { snapshot in
+            
+        })
     }
     
     /// Gets all messages for a given conversation
     public func getAllMessagesForConversation(with id: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
     }
     
     /// Send a message with target conversation and message
