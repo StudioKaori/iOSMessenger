@@ -10,6 +10,9 @@ import UIKit
 class ConversationTableViewCell: UITableViewCell {
     
     // Cell identifier
+    // Need it for:
+//    table.register(ConversationTableViewCell.self,
+//    forCellReuseIdentifier: "ConversationTableViewCell")
     static let identifier = "ConversationTableViewCell"
     
     // Generate cell's 3 subviews

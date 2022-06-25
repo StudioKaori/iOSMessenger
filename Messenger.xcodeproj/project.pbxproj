@@ -104,6 +104,8 @@
 		43B7EB192846A80B007F902E /* Messenger */ = {
 			isa = PBXGroup;
 			children = (
+				43B7EB232846A80D007F902E /* Assets.xcassets */,
+				43B7EB332846A948007F902E /* Storyboards */,
 				43B7EB45284B4A3F007F902E /* GoogleService-Info.plist */,
 				43B7EB322846A910007F902E /* Resources */,
 				43B7EB312846A904007F902E /* Models */,
@@ -132,8 +134,6 @@
 		43B7EB2F2846A8EB007F902E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				43B7EB332846A948007F902E /* Storyboards */,
-				43B7EB232846A80D007F902E /* Assets.xcassets */,
 				43C8C57B2866DC35008ED3D8 /* ConversationTableViewCell.swift */,
 			);
 			path = Views;
