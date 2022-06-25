@@ -9,6 +9,9 @@ import UIKit
 
 class ConversationTableViewCell: UITableViewCell {
     
+    // Cell identifier
+    static let identifier = "ConversationTableViewCell"
+    
     // Generate cell's 3 subviews
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -34,6 +37,9 @@ class ConversationTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.addSubview(userImageView)
+        contentView.addSubview(userNameLabel)
+        contentView.addSubview(userMessageLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -42,9 +48,16 @@ class ConversationTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.addSubview(userImageView)
-        contentView.addSubview(userNameLabel)
-        contentView.addSubview(userMessageLabel)
+        
+        userImageView.frame = CGRect(x: 10, y: 10, width: 100, height: 100)
+        userNameLabel.frame = CGRect(x: userImageView.right + 10,
+                                     y: 10,
+                                     width: contentView.width - 20 - userImageView.width,
+                                     height: (contentView.height - 20)/2)
+        userMessageLabel.frame = CGRect(x: userImageView.right + 10,
+                                        y: userNameLabel.bottom + 10,
+                                        width: contentView.width - 20 - userImageView.width,
+                                        height: (contentView.height - 20)/2)
     }
     
     public func configure(with mode: String) {
