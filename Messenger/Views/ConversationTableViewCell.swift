@@ -74,6 +74,7 @@ class ConversationTableViewCell: UITableViewCell {
             switch result {
             case .success(let url):
                 DispatchQueue.main.async {
+                    // Cache downloaded image by SDWebImage, sd_setImage
                     self?.userImageView.sd_setImage(with: url, completed: nil)
                 }
                 
