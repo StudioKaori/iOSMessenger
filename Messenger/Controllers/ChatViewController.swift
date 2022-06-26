@@ -63,6 +63,7 @@ class ChatViewController: MessagesViewController {
     }()
     
     public let otherUserEmail: String
+    private let conversationId: String?
     public var isNewConversation = false
     
     private var messages = [Message]()
@@ -78,7 +79,9 @@ class ChatViewController: MessagesViewController {
         
     }
 
-    init(with email: String) {
+    init(with email: String, id: String?) {
+        // Why id: String? is optional -> When we create the conversation first, it has no id yet.
+        self.conversationId = id
         self.otherUserEmail = email
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,6 +99,12 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate = self
+        
+        listenForMessages()
+        
+    }
+    
+    private func listenForMessages() {
         
     }
     
