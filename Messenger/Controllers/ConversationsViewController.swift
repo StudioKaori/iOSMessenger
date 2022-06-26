@@ -64,6 +64,7 @@ class ConversationsViewController: UIViewController {
     }
     
 
+    // MARK: - startListeningForConversations
     // Add listener each time conversation updated in the real time DB
     private func startListeningForConversations() {
         // get email first
@@ -81,8 +82,13 @@ class ConversationsViewController: UIViewController {
                 guard !conversations.isEmpty else {
                     return
                 }
-                
+                // Assign new conversation
                 self?.conversations = conversations
+                
+                // Reload the table view ui
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
             case .failure(let error):
                 print("failed to get conversations :\(error)")
             }
@@ -148,15 +154,19 @@ class ConversationsViewController: UIViewController {
 
 }
 
+// MARK: - Tableview delegate
 extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return conversations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Hello World"
+        let model = conversations[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.identifier , for: indexPath) as! ConversationTableViewCell
+        
+        cell.configure(with: model)
+        
         // Add arrow in the right edge of the cell
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -165,11 +175,16 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Un-highlight the selected cell
         tableView.deselectRow(at: indexPath, animated: true)
+        let model = conversations[indexPath.row]
         
-        let vc = ChatViewController(with: "abc@gmail.com")
-        vc.title = "Jenny Smith"
+        let vc = ChatViewController(with: model.otherUserEmail)
+        vc.title = model.name
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
     }
 }
 
