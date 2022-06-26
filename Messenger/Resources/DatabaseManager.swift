@@ -378,7 +378,29 @@ extension DatabaseManager {
     }
     
     /// Gets all messages for a given conversation
-    public func getAllMessagesForConversation(with id: String, completion: @escaping (Result<String, Error>) -> Void) {
+    public func getAllMessagesForConversation(id: String, completion: @escaping (Result<[Message], Error>) -> Void) {
+        // everytime new conversation is created, the completion will be called.
+        database.child("\(id)/messages").observe(.value, with: { snapshot in
+            
+            // it should return Dictionary
+            guard let value = snapshot.value as? [[String: Any]] else {
+                completion(.failure(DatabaseErrors.failedToFetch))
+                return
+            }
+            
+            let messages: [Message] = value.compactMap({ dictionary in
+                guard let name = dictionary["name"] as? String,
+                      let isRead = dictionary["is_read"] as? Bool,
+                      let messageID = dictionary["id"] as? String,
+                      let content = dictionary["content"] as? String,
+                      let senderEmail = dictionary["sender_email"] as? String,
+                      let dateString = dictionary["date"] as? String else {
+                    return nil
+                }
+            })
+            
+            completion(.success(messages))
+        })
     }
     
     /// Send a message with target conversation and message

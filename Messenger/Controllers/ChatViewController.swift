@@ -84,6 +84,10 @@ class ChatViewController: MessagesViewController {
         self.conversationId = id
         self.otherUserEmail = email
         super.init(nibName: nil, bundle: nil)
+        // if no conversationID, no data in DB. Then no reason to listen DB
+        if let conversationId = conversationId {
+            listenForMessages(id: conversationId)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -99,13 +103,20 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate = self
-        
-        listenForMessages()
-        
     }
     
-    private func listenForMessages() {
-        
+    private func listenForMessages(id: String) {
+        DatabaseManager.shared.getAllMessagesForConversation(id: id, completion: { [weak self] result in
+            switch result {
+            case .success(let messages):
+                guard !messages.isEmpty else {
+                    return
+                }
+                self?.messages = messages
+            case .failure(let error):
+                print("Failed to get msgs: \(error)")
+            }
+        })
     }
     
     override func viewDidAppear(_ animated: Bool) {
