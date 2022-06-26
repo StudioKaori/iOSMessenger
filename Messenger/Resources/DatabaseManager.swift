@@ -382,8 +382,6 @@ extension DatabaseManager {
         // everytime new conversation is created, the completion will be called.
         database.child("\(id)/messages").observe(.value, with: { snapshot in
             
-            print("snapshot: \(snapshot)")
-            
             // it should return Dictionary
             guard let value = snapshot.value as? [[String: Any]] else {
                 completion(.failure(DatabaseErrors.failedToFetch))
@@ -412,8 +410,7 @@ extension DatabaseManager {
                                sentDate: date,
                                kind: .text(content))
             })
-            
-            print("Messages: \(messages)")
+        
             completion(.success(messages))
         })
     }

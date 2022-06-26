@@ -112,7 +112,7 @@ class ChatViewController: MessagesViewController {
                 guard !messages.isEmpty else {
                     return
                 }
-                print("listenForMessages success: \(messages)")
+  
                 self?.messages = messages
                 
                 // update ui
