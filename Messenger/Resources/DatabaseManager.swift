@@ -372,6 +372,8 @@ extension DatabaseManager {
                                     latestMessage: latestMessageObject)
                 
             })
+            
+            completion(.success(conversations))
         })
     }
     
