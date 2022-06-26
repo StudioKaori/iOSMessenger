@@ -112,7 +112,13 @@ class ChatViewController: MessagesViewController {
                 guard !messages.isEmpty else {
                     return
                 }
+                print("listenForMessages success: \(messages)")
                 self?.messages = messages
+                
+                // update ui
+                DispatchQueue.main.async {
+                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                }
             case .failure(let error):
                 print("Failed to get msgs: \(error)")
             }
@@ -188,7 +194,6 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
             return sender
         }
         fatalError("Self sender is nil, email should be cached.")
-        return Sender(photoURL: "", senderId: "12", displayName: "")
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {

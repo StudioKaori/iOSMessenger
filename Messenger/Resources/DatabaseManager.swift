@@ -319,12 +319,12 @@ extension DatabaseManager {
             "content": message,
             "date": dateString,
             "sender_email": currentUserEmail,
-            "isRead": false,
+            "is_read": false,
             "name": name
         ]
         
         let value : [String: Any] = [
-            "message": [
+            "messages": [
                 collectionMessage
             ]
         ]
@@ -382,6 +382,8 @@ extension DatabaseManager {
         // everytime new conversation is created, the completion will be called.
         database.child("\(id)/messages").observe(.value, with: { snapshot in
             
+            print("snapshot: \(snapshot)")
+            
             // it should return Dictionary
             guard let value = snapshot.value as? [[String: Any]] else {
                 completion(.failure(DatabaseErrors.failedToFetch))
@@ -397,6 +399,7 @@ extension DatabaseManager {
                       let type = dictionary["type"] as? String,
                       let dateString = dictionary["date"] as? String,
                       let date = ChatViewController.dateFormatter.date(from: dateString) else {
+                    print("Failed to unwrap in getAllMessagesForConversation")
                     return nil
                 }
                 
@@ -410,6 +413,7 @@ extension DatabaseManager {
                                kind: .text(content))
             })
             
+            print("Messages: \(messages)")
             completion(.success(messages))
         })
     }
