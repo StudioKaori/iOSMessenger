@@ -164,7 +164,11 @@ class LoginViewController: UIViewController {
             
             let user = result.user
             
+            let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+            DatabaseManager.shared
+            
             UserDefaults.standard.set(email, forKey: "email")
+            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
             
             print("Loggin user: \(user)")
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
@@ -245,6 +249,7 @@ extension LoginViewController: LoginButtonDelegate {
             
             // Save email to UserDefault
             UserDefaults.standard.set(email, forKey: "email")
+            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
             
             // Check if the user already exists on Firebase
             DatabaseManager.shared.userExists(with: email, completion: { exists in

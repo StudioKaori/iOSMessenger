@@ -123,6 +123,18 @@ extension DatabaseManager {
     }
 }
 
+extension DatabaseManager {
+    public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
+        self.database.child("\(path)").observeSingleEvent(of: .value, with: { snapshot in
+            guard let value = snapshot.value else {
+                completion(.failure(DatabaseErrors.failedToFetch))
+                return
+            }
+            completion(.success(value))
+        })
+    }
+}
+
 // MARK: - Sending msgs / conversations
 
 /*
