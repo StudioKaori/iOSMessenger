@@ -86,10 +86,6 @@ class ChatViewController: MessagesViewController {
         self.conversationId = id
         self.otherUserEmail = email
         super.init(nibName: nil, bundle: nil)
-        // if no conversationID, no data in DB. Then no reason to listen DB
-        if let conversationId = conversationId {
-            listenForMessages(id: conversationId)
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -107,7 +103,7 @@ class ChatViewController: MessagesViewController {
         messageInputBar.delegate = self
     }
     
-    private func listenForMessages(id: String) {
+    private func listenForMessages(id: String, shouldScrollToBottom: Bool) {
         DatabaseManager.shared.getAllMessagesForConversation(id: id, completion: { [weak self] result in
             switch result {
             case .success(let messages):
@@ -119,7 +115,13 @@ class ChatViewController: MessagesViewController {
                 
                 // update ui
                 DispatchQueue.main.async {
+                    // New message will be hidden behind the navigation bar
                     self?.messagesCollectionView.reloadDataAndKeepOffset()
+                    
+                    if shouldScrollToBottom {
+                        self?.messagesCollectionView.scrollToLastItem()
+                    }
+                    
                 }
             case .failure(let error):
                 print("Failed to get msgs: \(error)")
@@ -132,6 +134,11 @@ class ChatViewController: MessagesViewController {
         
         // Show the keyboard from the biginning
         messageInputBar.inputTextView.becomeFirstResponder()
+        
+        // if no conversationID, no data in DB. Then no reason to listen DB
+        if let conversationId = conversationId {
+            listenForMessages(id: conversationId, shouldScrollToBottom: true)
+        }
     }
 
 }
