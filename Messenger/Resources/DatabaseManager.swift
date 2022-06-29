@@ -123,6 +123,7 @@ extension DatabaseManager {
     }
 }
 
+// MARK: - getDataFor
 extension DatabaseManager {
     public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
         self.database.child("\(path)").observeSingleEvent(of: .value, with: { snapshot in
