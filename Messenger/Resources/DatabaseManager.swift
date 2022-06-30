@@ -173,9 +173,12 @@ extension DatabaseManager {
     // MARK: - createNewConversation
     /// Creates a new conversation with target user email and first message sent
     public func createNewConversation(with otherUserEmail: String, name: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
-        guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+        guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String,
+              let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
             return
         }
+        
+        print("currentName: \(currentName)")
         let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
         
         let ref = database.child(safeEmail)
@@ -235,7 +238,7 @@ extension DatabaseManager {
             let recipient_newConversationData: [String: Any] = [
                 "id": conversationId,
                 "other_user_email": safeEmail,
-                "name": "Self",
+                "name": currentName,
                 "latest_message": [
                     "date": dateString,
                     "message": message,
@@ -455,9 +458,23 @@ extension DatabaseManager {
         })
     }
     
+    // MARK: - sendMessage
     /// Send a message with target conversation and message
-    public func sendMessage(to conversation: String, message: Message, completion: @escaping (Bool) -> Void) {
+    public func sendMessage(to conversationId: String, message: Message, completion: @escaping (Bool) -> Void) {
+        // Add new message to messages
         
+        // update sender latest message
+        
+        // update recipient latest message
+        
+        self.database.child("\(conversationId)/messages").observeSingleEvent(of: .value, with: { snapshot in
+            guard var currentMessages = snapshot.value as? [[String: Any]] else {
+                completion(false)
+                return
+            }
+            
+            
+        })
     }
     
 }

@@ -143,9 +143,10 @@ class ChatViewController: MessagesViewController {
 
 }
 
-// MARK: - InputBarAccessoryViewDelegate
+// InputBarAccessoryViewDelegate
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
+    // MARK: - Send Button Tapped
     // When the send button is hit
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         
@@ -177,9 +178,12 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             })
         } else {
             // append to existing conversation data
+            guard let conversationId = conversationId else {
+                return
+            }
             
             DatabaseManager.shared.sendMessage(
-                to: self.otherUserEmail,
+                to: conversationId,
                 message: message,
                 completion: { success in
                     if success {
